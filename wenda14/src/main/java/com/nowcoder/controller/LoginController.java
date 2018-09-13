@@ -39,15 +39,15 @@ public class LoginController {
                       HttpServletResponse response) {
         try {
             Map<String, Object> map = userService.register(username, password);
-            if (map.containsKey("ticket")) {
+            if (map.containsKey("ticket")) {//将生成的ticket查看是否存在。
                 Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
-                cookie.setPath("/");
-                if (rememberme) {
+                cookie.setPath("/");//下发到浏览器
+                if (rememberme) {    //是否记住登录状态。
                     cookie.setMaxAge(3600*24*5);
                 }
                 response.addCookie(cookie);
                 if (StringUtils.isNotBlank(next)) {
-                    return "redirect:" + next;
+                    return "redirect:" + next;//如果没有登录，将前面的信息带入，登陆之后一次性到登陆之前的地方。
                 }
                 return "redirect:/";
             } else {
@@ -63,7 +63,8 @@ public class LoginController {
     }
 
     @RequestMapping(path = {"/reglogin"}, method = {RequestMethod.GET})
-    public String regloginPage(Model model, @RequestParam(value = "next", required = false) String next) {
+    public String regloginPage(Model model,
+                               @RequestParam(value = "next", required = false) String next) {
         model.addAttribute("next", next);
         return "login";
     }
